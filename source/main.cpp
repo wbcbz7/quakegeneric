@@ -560,7 +560,7 @@ void repeat_me_for_input() {
 extern "C" bool SELECT_VGA;
 
 //uint8_t* FRAME_BUF = (uint8_t*)0x20000000; // temp "trash" value
-uint8_t __aligned(4) FRAME_BUF[QUAKEGENERIC_RES_X * QUAKEGENERIC_RES_Y] = { 0 };
+extern "C" uint8_t __aligned(4) FRAME_BUF[QUAKEGENERIC_RES_X * QUAKEGENERIC_RES_Y] = { 0 };
 
 #if DVI_HSTX
 enum {
@@ -584,7 +584,7 @@ static union dvi_hstx_pin_layout_t hstx_out_pin_layouts[] = {
 };
 
 // palette used by the DVI/VGA HSTX driver
-static uint32_t linebuf_pal[256];
+static uint32_t linebuf_pal[256] = { 0 };
 
 struct linebuf_cb_info_8bpp_t {
     const uint8_t  *pic;
@@ -672,11 +672,20 @@ void __scratch_x("render") render_core() {
     multicore_lockout_victim_init();
 #if DVI_HSTX
     hstx_init();
+    if (SELECT_VGA) {
+        linebuf_pal[0x00] = 0x000000;
+        linebuf_pal[0x0F] = 0xEBEBEB;
+    } else {
+        linebuf_pal[0x00] = vga_pwm_xlat_color32(0x000000);
+        linebuf_pal[0x0F] = vga_pwm_xlat_color32(0xEBEBEB);
+    }
 #else
     multicore_lockout_victim_init();
     graphics_init();
     graphics_set_buffer(FRAME_BUF, QUAKEGENERIC_RES_X, QUAKEGENERIC_RES_Y);
     graphics_set_bgcolor(0x000000);
+    graphics_set_palette(0,    0x000000);
+    graphics_set_palette(0x0F, 0xEBEBEB);   // white in quake palette
 #endif
     sem_acquire_blocking(&vga_start_semaphore);
     

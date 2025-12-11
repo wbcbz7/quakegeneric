@@ -317,6 +317,8 @@ void Chase_Reset (void);
 void Chase_Update (void);
 
 #include "psram_alloc.h"
+#include "tprintf.h"
+extern uint8_t FRAME_BUF[];	// currently displaying frame buffer 
 
 #ifdef __cplusplus
 }

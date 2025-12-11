@@ -200,6 +200,7 @@ file(GLOB_RECURSE SRC
 	${PROJECT_SOURCE_DIR}/source/sv_user.c
 	${PROJECT_SOURCE_DIR}/source/sys_pico.c
     ${PROJECT_SOURCE_DIR}/source/test_pins.c
+    ${PROJECT_SOURCE_DIR}/source/tprintf.c
 	${PROJECT_SOURCE_DIR}/source/vid_null.c
 	${PROJECT_SOURCE_DIR}/source/view.c
 	${PROJECT_SOURCE_DIR}/source/wad.c
